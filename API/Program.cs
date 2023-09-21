@@ -1,5 +1,6 @@
 using API.Controllers;
 using API.Data;
+using API.Middleware;
 using Microsoft.EntityFrameworkCore;
 
 //for builder
@@ -23,6 +24,9 @@ builder.Services.AddCors();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
+app.UseMiddleware<ExceptionMiddleware>();
+
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
