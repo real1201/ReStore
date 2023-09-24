@@ -10,12 +10,31 @@ import {
 } from "@mui/material";
 import { Product } from "../../app/model/product";
 import { Link } from "react-router-dom";
+import { useState } from "react";
+import agent from "../../app/api/agent";
+import { LoadingButton } from "@mui/lab";
+import { toast } from "react-toastify";
+import { useStoreContext } from "../../app/context/StoreContext";
 
 interface Props {
   product: Product;
 }
 
 function ProductCard({ product }: Props) {
+  const [isLoading, setIsLoading] = useState(false);
+  const { setBasket } = useStoreContext();
+
+  const handleAddItem = (productId: string) => {
+    setIsLoading(true);
+    agent.Basket.addItem(productId)
+      .then((basket) => setBasket(basket))
+      .catch((err) => console.log(err))
+      .finally(() => {
+        setIsLoading(false);
+        toast.success(`${product.name} added to cart.`);
+      });
+  };
+
   return (
     <Card>
       <CardHeader
@@ -43,7 +62,13 @@ function ProductCard({ product }: Props) {
         </Typography>
       </CardContent>
       <CardActions>
-        <Button size="small">Add to Cart</Button>
+        <LoadingButton
+          loading={isLoading}
+          onClick={() => handleAddItem(product.id)}
+          size="small"
+        >
+          Add to Cart
+        </LoadingButton>
         <Button component={Link} to={`/catalog/${product.id}`} size="small">
           View
         </Button>

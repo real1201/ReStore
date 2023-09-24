@@ -13,4 +13,5 @@ public class StoreCotext : DbContext
     }
 
     public DbSet<Product> Products => Set<Product>();
+    public DbSet<Basket> Baskets => Set<Basket>();
 }
